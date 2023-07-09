@@ -1,28 +1,33 @@
-const ToDoModel = require("../models/ToDoModel")
+const TasksModel = require("../models/Tasks");
+const ToDoList = require("../models/ToDoList");
+const User = require("../models/User");
 
-const getToDo = async(req,res)=>{
-    const todo = await ToDoModel.find()
-    .catch((err)=>{console.log(err)})
-    res.send(todo)
-}
 
-const saveToDo = async(req,res)=>{
-    const {text} = req.body
-    console.log(req.body)
-    ToDoModel
-    .create({text})
-    .then((data)=>{
-        console.log("Added Successfully....");
-        console.log(data);
-        res.send(data)
-    })
-    .catch((err)=>{console.log(err)})
-    
-}
+const saveTask = async (req, res) => {
+    try {
+      const { text, toDoId } = req.body;
+        console.log(req.body);
+      const task = await TasksModel.create({ text: text, checked: false,todolist:toDoId });
+  
+      await ToDoList.findByIdAndUpdate(
+        { _id: toDoId },
+        { $push: { tasks: task._id } }
+      );
+  
+      console.log("Added Successfully....");
+      console.log(task);
+  
+      res.send(task);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Failed to save task");
+    }
+  };
+  
 
-const updateToDo = (req,res)=>{
+const updateTask= (req,res)=>{
     const {_id,text}=req.body
-    ToDoModel
+    TasksModel
     .findByIdAndUpdate(_id,{text})
     .then((data)=>{
         console.log("Updated Successfully....");
@@ -32,22 +37,86 @@ const updateToDo = (req,res)=>{
     .catch((err)=>{console.log(err)})
 }
 
-const deleteToDo = (req,res)=>{
-    const {_id}=req.body
-    console.log(req.body)
-    ToDoModel
-    .findByIdAndDelete(_id)
-    .then((data)=>{
-        console.log("Deleted Successfully....");
-        console.log(data);
-        res.send(data)
-    })
-    .catch((err)=>{console.log(err)})
-}
+
+const toggleCheckTask = async (req, res) => {
+    const { _id } = req.body;
+    console.log(req.body);
+    try {
+      const task = await TasksModel.findById(_id);
+      if (!task) {
+        throw new Error('Task not found');
+      }
+      
+      task.checked = !task.checked;
+      const updatedTask = await task.save();
+      
+      console.log("Toggled Successfully....");
+      console.log(updatedTask);
+      
+      res.send(updatedTask);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Failed to toggle task");
+    }
+  };
+  
+  
+
+
+// const deleteTask = async(req,res)=>{
+//     const {_id}=req.body
+//     console.log(req.body)
+//     const task =await TasksModel.findById(_id);
+//     console.log(task);
+//     const toDoId=task.todolist;
+//     await TasksModel.findByIdAndDelete(_id);
+
+//     ToDoList.findById(toDoId)
+//     .then((data)=>{
+//         const newTasks=data.tasks.filter((task)=>{task!=_id})
+//         ToDoList.findByIdAndUpdate(toDoId,{tasks:newTasks}).then(data=>{
+//             console.log("Deleted Successfully....");
+//         console.log(data);
+//         res.send(data)
+//         })
+        
+//     })
+//     .catch((err)=>{console.log(err)})
+// }
+
+
+const deleteTask = async (req, res) => {
+    const { _id } = req.body;
+    console.log(req.body);
+    const task = await TasksModel.findById(_id);
+    console.log(task);
+    const toDoId = task.todolist;
+    await TasksModel.findByIdAndDelete(_id);
+  
+    ToDoList.findById(toDoId)
+      .then((data) => {
+        const newTasks = data.tasks.filter((task) => {
+          return task !== _id; // Add return statement here
+        });
+        ToDoList.findByIdAndUpdate(toDoId, { tasks: newTasks }).then((data) => {
+          console.log("Deleted Successfully....");
+          console.log(data);
+          res.send(data);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  
+
+
+
+
 
 module.exports={
-    getToDo,
-    saveToDo,
-    updateToDo,
-    deleteToDo
+    saveTask,
+    updateTask,
+    deleteTask,
+    toggleCheckTask,
 }
