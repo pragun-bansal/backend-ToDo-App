@@ -1,5 +1,5 @@
 const { default: mongoose, Mongoose } = require("mongoose");
-const { default: isEmail } = require("validator/lib/isEmail");
+// const { default: isEmail } = require("validator/lib/isEmail");
 
 const UserSchema = new mongoose.Schema({
     name:{
@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
           /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
           "Please fill a valid email address",
         ],
-        validate: [isEmail, "invalid email"],
+        // validate: [isEmail, "invalid email"],
       },
       pfp: {
         type: String,
