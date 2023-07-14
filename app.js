@@ -79,6 +79,7 @@ app.use(
     name: "session",
     keys: ["Pragun"],
     maxAge: 24 * 60 * 60 * 1000,
+    // secure:true
   })
 );
 app.use(morgan("dev"));

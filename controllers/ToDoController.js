@@ -28,7 +28,7 @@ const saveTask = async (req, res) => {
 const updateTask= (req,res)=>{
     const {_id,text}=req.body
     TasksModel
-    .findByIdAndUpdate(_id,{text})
+    .findByIdAndUpdate(_id,{text , checked:false})
     .then((data)=>{
         console.log("Updated Successfully....");
         console.log(data);

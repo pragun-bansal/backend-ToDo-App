@@ -1,18 +1,14 @@
 const User =require("../../models/User");
 const crypto = require("crypto");
 const ToDoList = require("../../models/ToDoList");
+const {
+  genPassword,
+  validPassword,
+  issueJWT
+} = require("../../lib/utils")
 
-function genPassword(password) {
-    var salt = crypto.randomBytes(32).toString("hex");
-    var genHash = crypto
-      .pbkdf2Sync(password, salt, 10000, 64, "sha512")
-      .toString("hex");
-  
-    return {
-      salt: salt,
-      hash: genHash,
-    };
-  }
+
+
 
 
 const registerUser = async (userBody) => {
@@ -49,6 +45,18 @@ const registerUser = async (userBody) => {
     // return registeredUser;
   };
 
+
+  const loginUser = async (email, password) => {
+    const user = await User.findOne({email:email});
+    if (!user) return null;
+    const isValid = validPassword(password, user.hash, user.salt);
+    if (!isValid) return null;
+    const tokenObject = issueJWT(user);
+    return tokenObject;
+  };
+
+
   module.exports={
     registerUser,
+    loginUser
   }

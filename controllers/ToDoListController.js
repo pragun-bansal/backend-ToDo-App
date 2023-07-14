@@ -69,7 +69,7 @@ const getToDoList = async (req, res) => {
 
 
 const updateListName = async(req,res)=>{
-    const {toDoListId,text}=req.body;
+    const {ReduxListId:toDoListId,text:text}=req.body;
     try{
       const todo =await ToDoList.findOneAndUpdate({_id:toDoListId},{name:text});
       console.log(todo);

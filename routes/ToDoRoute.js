@@ -1,18 +1,19 @@
 const {Router} = require("express");
 const { getToDoList, getAllLists, createToDoList,deleteToDoList, updateListName } = require("../controllers/ToDoListController");
 const { saveTask, updateTask,deleteTask,toggleCheckTask, } = require("../controllers/ToDoController");
+const { verifyUser } = require("../lib/utils");
 
 const router = Router()
 
-router.post("/getToDoList", getToDoList)
-router.post("/saveTAsk",saveTask)
-router.post("/updateTask",updateTask)
-router.post("/deleteTAsk",deleteTask)
-router.put("/toggleCheckTask",toggleCheckTask)
-router.post("/getAllLists", getAllLists)
-router.post("/createToDoList", createToDoList)
-router.post("/deleteToDoList", deleteToDoList)
-router.put("/updateListName", updateListName)
+router.post("/getToDoList",verifyUser, getToDoList)
+router.post("/saveTAsk",verifyUser,saveTask)
+router.post("/updateTask",verifyUser,updateTask)
+router.post("/deleteTAsk",verifyUser,deleteTask)
+router.put("/toggleCheckTask",verifyUser,toggleCheckTask)
+router.post("/getAllLists",verifyUser, getAllLists)
+router.post("/createToDoList",verifyUser, createToDoList)
+router.post("/deleteToDoList",verifyUser, deleteToDoList)
+router.post("/updateListName",verifyUser, updateListName)
 router.get("/example", (req, res) => {
     // Access the session data
     const sessionData = req.session;

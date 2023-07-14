@@ -290,10 +290,8 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        console.log(profile);
         const newUser = await User.findOne({ email: profile.emails[0].value });
         let user;
-
         if (!newUser) {
           let name = profile.displayName;
 
@@ -307,9 +305,9 @@ passport.use(
         } else {
           user = newUser;
         }
-
         done(null, user);
       } catch (err) {
+        console.log("google strategy m error de diya h");
         done(err);
       }
     }
@@ -325,7 +323,7 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        console.log(profile);
+        console.log("profile" , profile);
         const newUser = await User.findOne({ email: profile.emails[0].value });
         let user;
 
