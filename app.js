@@ -60,8 +60,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const passport = require("passport");
-require('./config/passport.js')
+// const passport = require("passport");
+// require('./config/passport.js')
 const cookieSession = require("cookie-session");
 const authRoute = require("./config/auth");
 const morgan = require("morgan");
@@ -85,8 +85,8 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use((req, res, next) => {
   console.log("User:", req.user); // Accessing req.user in middleware
