@@ -6,6 +6,7 @@ const UserService = require("./Services/UserService")
 const {
   validateLoginInput
 } = require("./../validation/login");
+const {validateRegisterInput} =require("./../validation/register")
 
 
 const CLIENT_URL = `${process.env.FRONT_END_URL}`;
@@ -91,15 +92,25 @@ router.post("/register",async(req,res)=>{
   const newUser = await User.findOne({ email: userDetails.email });
         let user;
         if (!newUser) {
-          let name = userDetails.username;
+          try{
+          
 
           // Register the new user
+
           user = await UserService.registerUser({
-            name,
+            name:userDetails.username,
             email: userDetails.email,
             password: userDetails.password,
             // pfp: profile.photos[0].value,
           });
+          }
+          catch(err){
+            res.status(400).json(
+              err,
+              message="user Can't be created"
+            )
+          }
+          
         } else {
           user = newUser;
         }

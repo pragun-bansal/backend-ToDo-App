@@ -12,6 +12,7 @@ const {
 
 
 const registerUser = async (userBody) => {
+
     // generate password
     console.log(userBody);
     const {
